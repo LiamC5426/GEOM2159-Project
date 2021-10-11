@@ -1,0 +1,67 @@
+import os
+from qgis.core import *
+from qgis.gui import *
+# These lines are placed at the beginning of every QGIS interface code
+# This imports all the interface functionality that I need to add layers and create new fields in attribute tables
+
+# When adding a vector layer, the path (location) of the file is entered, then given a name before writing code to add it in
+# This is the same for addition of all layers
+tram_lines = "C:/Users/localuser/Desktop/RMIT/2021/Geospatial Programming/Programming Project/mga2020_55/shape/whole_of_dataset/vic/PTV/PTV_METRO_TRAM_ROUTE.shp"
+vlayer = iface.addVectorLayer(tram_lines, "routes", "ogr")
+# This code was used to add the tram lines into QGIS.
+# The vector layer is an esri shape file from spatial datamart.
+# This layer was useful for deriving the full distance of each tram route.
+
+import os
+from qgis.core import *
+from qgis.gui import *
+tram_stops = "C:/Users/localuser/Desktop/RMIT/2021/Geospatial Programming/Programming Project/mga2020_55/shape/whole_of_dataset/vic/PTV/PTV_METRO_TRAM_STOP.shp"
+vlayer = iface.addVectorLayer(tram_stops, "stops", "ogr")
+# This code implements another aspect of the same esri shapefile acquired from spatial datamart
+# This code enabled each individual tram stop to be added to the project, combining with the route lines.
+# This layer was useful for deriving the average distances between each tram stop, which contributed towards the calculation of the user travel time.
+
+import os
+from qgis.core import *
+from qgis.gui import *
+from qgis import processing
+
+processing.runAndLoadResults("native:saveselectedfeatures", {
+                'INPUT': 'routes PTV_METRO_TRAM_ROUTE',
+                'OUTPUT': 'All routes'})
+# The purpose of this operation was to create a new table from the spatial datamart-based table
+# This then allowed me to interact with the table using full functionality and also to load the functions for calculating average stop distance and average speed
+
+import os
+from qgis.core import *
+from qgis.gui import *
+from qgis import processing
+
+processing.runAndLoadResults("native:addfieldtoattributestable", {
+                        'INPUT': 'All routes',
+                        'FIELD_NAME': 'Wday_avg_time',
+                        'FIELD_TYPE': 0,
+                        'FIELD_LENGTH': 10,
+                        'FIELD_PRECISION': 0,
+                        'OUTPUT': 'AllRoutes2'})
+# This operation added a new field to the main attribute table, representing weekday travel times
+# These fields contain the approximate average travel time from one end of the line to the other on each tram route
+# Given travel times can vary on weekdays and weekends, I made a seperate table for weekend times, in addition to weekday times
+# The new field gets added to a brand new attribute table with all the pre-existing fields
+# I called this table 'AllRoutes2'
+
+import os
+from qgis.core import *
+from qgis.gui import *
+from qgis import processing
+
+processing.runAndLoadResults("native:addfieldtoattributestable", {
+                        'INPUT': 'AllRoutes2',
+                        'FIELD_NAME': 'Wknd_avg_time',
+                        'FIELD_TYPE': 0,
+                        'FIELD_LENGTH': 10,
+                        'FIELD_PRECISION': 0,
+                        'OUTPUT': 'AllRoutesFinal'})
+# This operation is a similar operation to the previous one
+# This involves creating another field to the same attribute table, but this one is for weekend times instead of weekdays
+# Given this, another new table had to be added with the new field, which I called 'AllRoutesFinal'
