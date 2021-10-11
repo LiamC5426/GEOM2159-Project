@@ -1,0 +1,22 @@
+def average_stop_dist(stops,routedist):
+    distm = routedist * 1000
+    avg_dist = distm / stops
+    avg_final = round(avg_dist)
+    print(avg_final)
+    return avg_final
+# Function to calculate the average distance between stops on each route in QGIS
+# Output was rounded to the nearest whole number
+
+def route_num(tramroute):
+    return tramroute
+# The purpose of this function was to convert the tram route numbers in QGIS from a string to an integer
+# The reason for this was with string, numbers do not show up in numerical order
+# To make things easier, I needed the routes to be in order, so used this function in QGIS to make the conversion
+
+def avg_tram_speed(linedist,linetime):
+    avg_spd = linedist / linetime
+    avg_spd_phr = avg_spd * 60
+    print(avg_spd_phr)
+    return avg_spd_phr
+# This function calculated the average speed of each tram based on the route
+# Final output not rounded, so as to assist with accuracy when it came to calculation of travel time for the user
